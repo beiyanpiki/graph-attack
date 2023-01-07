@@ -1,0 +1,3 @@
+[submodule "greatx"]
+	path = greatx
+	url = git@github.com:EdisonLeeeee/GreatX.git

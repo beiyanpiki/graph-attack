@@ -1,0 +1,25 @@
+# You may leave blank to use default setting, but DO NOT delete any item.
+# Check default value in "src/util/config.py"
+
+# Basic settings
+log_path: '/home/miku/gatk/log'
+data_dir: '/home/miku/gatk/data'
+device: 'cpu'
+random_state: 3939
+sample_nodes: 100
+
+# Experimental settings
+attacks:
+  - 'random'
+  - 'nettack'
+  - 'sga'
+surrogates:
+  - 'gcn'
+  - 'sgc'
+datasets:
+  - 'cora'
+  - 'citeseer'
+  - 'pubmed'
+skip: # format like [attack.surrogate.dataset], one per line
+  - 'nettack.gcn.cora'
+  - 'random.sgc.pubmed'
