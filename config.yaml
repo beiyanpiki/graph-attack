@@ -2,24 +2,27 @@
 # Check default value in "src/util/config.py"
 
 # Basic settings
-log_path: '/home/miku/gatk/log'
-data_dir: '/home/miku/gatk/data'
-device: 'cpu'
+log_path: "/home/miku/gatk/log"
+data_dir: "/home/miku/gatk/data"
+device: "cuda:0"
 random_state: 3939
-sample_nodes: 100
+sample_nodes: 2
 
 # Experimental settings
 attacks:
-  - 'random'
-  - 'nettack'
-  - 'sga'
+  - "nettack"
+  - "random"
+  - "sga"
+models:
+  - "gcn"
+  - "gat"
+  - "sgc"
 surrogates:
-  - 'gcn'
-  - 'sgc'
+  - "sgc"
 datasets:
-  - 'cora'
-  - 'citeseer'
-  - 'pubmed'
+  - "cora"
+  - "citeseer"
+  - "pubmed"
 skip: # format like [attack.surrogate.dataset], one per line
-  - 'nettack.gcn.cora'
-  - 'random.sgc.pubmed'
+  - "nettack.gcn.cora"
+  - "random.sgc.pubmed"

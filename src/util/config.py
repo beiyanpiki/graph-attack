@@ -15,7 +15,9 @@ class Settings:
         base_dir = os.path.abspath(os.path.join(base_dir, '..'))
 
         # Basic settings
-        self.log_path: str = os.path.join(base_dir, 'log', datetime.now().strftime("%Y%m%d_%H%M%S") + '.txt')
+        self.log_path: str = os.path.join(
+            base_dir, 'log',
+            datetime.now().strftime("%Y%m%d_%H%M%S") + '.txt')
         self.data_dir: str = os.path.join(base_dir, 'data')
         self.device: str = 'cpu'
         self.random_state: int = 3939
@@ -24,6 +26,7 @@ class Settings:
         self.logger: logging.Logger = create_logger(self.log_path)
 
         # Experimental settings
+        self.models: List[str] = []
         self.attacks: List[str] = []
         self.surrogates: List[str] = []
         self.datasets: List[str] = []
@@ -37,6 +40,7 @@ class Settings:
             'random_state': self.random_state,
             'sample_nodes': self.sample_nodes,
             'logger': str(self.logger),
+            'models': self.models,
             'attacks': self.attacks,
             'surrogates': self.surrogates,
             'datasets': self.datasets,
@@ -55,18 +59,28 @@ class Settings:
             # Basic settings
             self.log_path = os.path.join(config["log_path"], datetime.now().strftime("%Y%m%d_%H%M%S") + '.txt') if \
                 config["log_path"] is not None else self.log_path
-            self.data_dir = config["data_dir"] if config["data_dir"] is not None else self.data_dir
-            self.device = config["device"] if config["device"] is not None else self.device
-            self.random_state = config["random_state"] if config["random_state"] is not None else self.random_state
-            self.sample_nodes = config["sample_nodes"] if config["sample_nodes"] is not None else self.sample_nodes
+            self.data_dir = config["data_dir"] if config[
+                "data_dir"] is not None else self.data_dir
+            self.device = config["device"] if config[
+                "device"] is not None else self.device
+            self.random_state = config["random_state"] if config[
+                "random_state"] is not None else self.random_state
+            self.sample_nodes = config["sample_nodes"] if config[
+                "sample_nodes"] is not None else self.sample_nodes
 
             self.logger = create_logger(self.log_path)
 
             # Experimental settings
-            self.attacks = config["attacks"] if config["attacks"] is not None else self.attacks
-            self.surrogates = config["surrogates"] if config["surrogates"] is not None else self.surrogates
-            self.datasets = config["datasets"] if config["datasets"] is not None else self.datasets
-            self.skip = config["skip"] if config["skip"] is not None else self.skip
+            self.models = config["models"] if config[
+                "models"] is not None else self.models
+            self.attacks = config["attacks"] if config[
+                "attacks"] is not None else self.attacks
+            self.surrogates = config["surrogates"] if config[
+                "surrogates"] is not None else self.surrogates
+            self.datasets = config["datasets"] if config[
+                "datasets"] is not None else self.datasets
+            self.skip = config["skip"] if config[
+                "skip"] is not None else self.skip
 
             # Log settings
             self.logger.info(F"Load settings: \n{self.__repr__()}")

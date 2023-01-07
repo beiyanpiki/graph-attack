@@ -4,14 +4,14 @@ import torch
 from torch import nn
 from torch_geometric.data import Data
 
-from greatx.attack.targeted import RandomAttack
+from greatx.attack.targeted import Nettack
 from greatx.training import Trainer
 from greatx.utils import BunchDict
 from util import settings
 
 
-def random_attack(data: Data, splits: BunchDict, target_node: int,
-                  model: nn.Module, surrogate: nn.Module) -> Tuple[bool, bool]:
+def nettack(data: Data, splits: BunchDict, target_node: int, model: nn.Module,
+            surrogate: nn.Module) -> Tuple[bool, bool]:
     num_features = data.x.size(-1)
     num_classes = data.y.max().item() + 1
     target_label = data.y[target_node].item()
@@ -23,7 +23,8 @@ def random_attack(data: Data, splits: BunchDict, target_node: int,
     output_before = trainer_before.predict(data, mask=target_node)
 
     # Attack
-    attacker = RandomAttack(data, device=settings.device)
+    attacker = Nettack(data, device=settings.device)
+    attacker.setup_surrogate(surrogate(num_features, num_classes))
     attacker.reset()
     attacker.attack(target_node)
 
