@@ -17,9 +17,13 @@ from util import (
 )
 
 parser = argparse.ArgumentParser(description="Graph Attack")
-parser.add_argument("-c", "--conf", help="Config file")
+parser.add_argument("-c", "--conf", help="Config file", type=str)
 parser.add_argument(
-    "-v", "--verbose", help="Print status every {verbose} times, default 10", default=10
+    "-v",
+    "--verbose",
+    help="Print status every {verbose} times, default 10",
+    default=10,
+    type=int,
 )
 args = parser.parse_args()
 if args.conf is not None:
@@ -53,7 +57,7 @@ for dataset_name, model_name, surrogate_name, attack_name in product(
         before, after = attack(data, splits, target_node, model, surrogate)
         metric.add(before, after, 1)
         torch.cuda.empty_cache()
-        if id % {args.verbose} == 0:
+        if id % args.verbose == 0:
             s = f"After {id} of {settings.sample_nodes} attack"
             settings.logger.debug(
                 f"{s:<24s}|{dataset_name.upper():^12s}|{model_name.upper():^12s}|{surrogate_name.upper():^12s}|{attack_name.upper():^12s}|{metric[0]/metric[2]:^12.4f}|{metric[1]/metric[2]:^12.4f}|"
