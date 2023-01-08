@@ -2,8 +2,8 @@
 # Check default value in "src/util/config.py"
 
 # Basic settings
-log_path: "/home/miku/gatk/log"
-data_dir: "/home/miku/gatk/data"
+log_path: "/home/miku/graph-atk/log"
+data_dir: "/home/miku/graph-atk/data"
 device: "cuda:0"
 random_state: 3939
 sample_nodes: 2
