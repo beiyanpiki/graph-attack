@@ -47,7 +47,7 @@ for dataset_name, model_name, surrogate_name, attack_name in product(
     for target_node in test_nodes:
         before, after = attack(data, splits, target_node, model, surrogate)
         metric.add(before, after, 1)
-        torch.cuda.empty_cache()
+        # torch.cuda.empty_cache()
 
     settings.logger.info(
         f"{dataset_name}\t{model_name}\t{surrogate_name}\t{attack_name}\t{metric[0]/metric[2]:.3f}\t{metric[1]/metric[2]:.3f}"
