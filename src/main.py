@@ -1,13 +1,14 @@
 import argparse
 from itertools import product
 
+import torch
 import torch_geometric.transforms as T
 
-from attack import random, sga, nettack
+from attack import get_attack_by_name
 from greatx.datasets import GraphDataset
-from greatx.nn.models import GAT, GCN, SGC
 from greatx.utils import split_nodes
-from util import settings, Accumulator, generate_rand_array
+from util import (Accumulator, generate_rand_array, get_model_by_name,
+                  get_surrogate_by_name, settings)
 
 parser = argparse.ArgumentParser(description='Graph Attack')
 parser.add_argument('-c', '--conf', help='Config file')
@@ -27,9 +28,9 @@ for dataset_name, model_name, surrogate_name, attack_name in product(
                            transform=T.LargestConnectedComponents())
     data = dataset[0]
     splits = split_nodes(data.y, random_state=settings.random_state)
-    model = globals()[model_name.upper()]
-    surrogate = globals()[surrogate_name.upper()]
-    attack = globals()[attack_name.lower()]
+    model = get_model_by_name(model_name)
+    surrogate = get_surrogate_by_name(surrogate_name)
+    attack = get_attack_by_name(attack_name)
     test_nodes = generate_rand_array(data.num_nodes, settings.sample_nodes,
                                      settings.random_state)
 
@@ -37,6 +38,7 @@ for dataset_name, model_name, surrogate_name, attack_name in product(
     for target_node in test_nodes:
         before, after = attack(data, splits, target_node, model, surrogate)
         metric.add(before, after, 1)
+        torch.cuda.empty_cache()
 
     settings.logger.info(
         f'{dataset_name}\t{model_name}\t{surrogate_name}\t{attack_name}\t{metric[0]/metric[2]:.3f}\t{metric[1]/metric[2]:.3f}'

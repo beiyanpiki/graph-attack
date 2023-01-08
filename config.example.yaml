@@ -23,6 +23,7 @@ datasets:
   - "cora"
   - "citeseer"
   - "pubmed"
-skip: # format like [attack.surrogate.dataset], one per line
-  - "nettack.gcn.cora"
-  - "random.sgc.pubmed"
+skip: 
+  # format like [attack.surrogate.dataset], one per line
+  # use '*' to match all.
+  - "nettack.gcn.*"
