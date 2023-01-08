@@ -23,7 +23,7 @@ if args.conf is not None:
     settings.load_conf(args.conf)
 
 settings.logger.info(
-    f"{'dataset':^8s}{'model':^8s}{'surrogate':^8s}{'attack':^8s}{'CLN':^8s}{'ATK':^8s}"
+    f"{'':24s}|{'Dataset':^12s}|{'Model':^12s}|{'Surrogate':^12s}|{'Attack':^12s}|{'CLN':^12s}|{'ATK':^12s}|"
 )
 for dataset_name, model_name, surrogate_name, attack_name in product(
     settings.datasets, settings.models, settings.surrogates, settings.attacks
@@ -50,11 +50,12 @@ for dataset_name, model_name, surrogate_name, attack_name in product(
         before, after = attack(data, splits, target_node, model, surrogate)
         metric.add(before, after, 1)
         torch.cuda.empty_cache()
-        if id % 10 == 0:
+        if (id + 1) % 10 == 0:
+            s = f"After {id} of {settings.sample_nodes} attack"
             settings.logger.debug(
-                f"{attack_name.upper():^8s}{model_name.upper():^8s}{surrogate_name.upper():^8s}{dataset_name.upper():^8s}{metric[0]/metric[2]:^8.4f}{metric[1]/metric[2]:^8.4f}"
+                f"{s:<24s}|{attack_name.upper():^12s}|{model_name.upper():^12s}|{surrogate_name.upper():^12s}|{dataset_name.upper():^12s}|{metric[0]/metric[2]:^12.4f}|{metric[1]/metric[2]:^12.4f}|"
             )
 
     settings.logger.info(
-        f"{dataset_name:^8s}{model_name:^8s}{surrogate_name:^8s}{attack_name:^8s}{metric[0]/metric[2]:^8.4f}{metric[1]/metric[2]:^8.4f}"
+        f"{'Complete':24s}|{attack_name.upper():^12s}|{model_name.upper():^12s}|{surrogate_name.upper():^12s}|{dataset_name.upper():^12s}|{metric[0]/metric[2]:^12.4f}|{metric[1]/metric[2]:^12.4f}|"
     )
