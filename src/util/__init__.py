@@ -1,13 +1,12 @@
 from .config import settings
 from .logger import create_logger
 from .metric import Accumulator
-from .util import (
+from .common import (
     check_in_skip,
     generate_rand_array,
     get_attack_by_name,
     get_model_by_name,
     get_surrogate_by_name,
-    setup_seed,
 )
 
 __all__ = [
@@ -18,6 +17,5 @@ __all__ = [
     "get_model_by_name",
     "get_surrogate_by_name",
     "get_attack_by_name",
-    "check_in_skip",
-    "setup_seed",
+    "check_in_skip"
 ]

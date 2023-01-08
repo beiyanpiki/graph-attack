@@ -7,7 +7,9 @@ from torch_geometric.data import Data
 from greatx.attack.targeted import RandomAttack
 from greatx.training import Trainer
 from greatx.utils import BunchDict
-from util import settings, setup_seed
+from util import settings
+
+from .common import setup_seed
 
 
 def random_attack(

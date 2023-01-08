@@ -1,10 +1,10 @@
+import random
 from typing import Optional
 
 import numpy as np
-import torch
 from torch import nn
 
-from attack import nettack, random, sga
+from attack import nettack, random_attack, sg_attack
 from greatx.nn.models import GAT, GCN, SGC
 
 from .config import settings
@@ -49,9 +49,9 @@ def get_attack_by_name(attack_name: str) -> Optional[nn.Module]:
     attack_name = attack_name.lower()
 
     if attack_name == "random":
-        return random
+        return random_attack
     elif attack_name == "sga":
-        return sga
+        return sg_attack
     elif attack_name == "nettack":
         return nettack
     else:
@@ -77,13 +77,6 @@ def check_in_skip(data: str, model: str, surrogate: str, attack: str) -> bool:
     return False
 
 
-def setup_seed(random_state: int) -> None:
-    torch.manual_seed(random_state)
-    torch.cuda.manual_seed_all(random_state)
-    np.random.seed(random_state)
-    random.seed(random_state)
-
-
 def generate_rand_array(max: int, sample: int, random_state: int) -> np.array:
-    setup_seed(random_state)
+    np.random.seed(random_state)
     return np.random.choice(np.arange(0, max), sample, replace=False)
