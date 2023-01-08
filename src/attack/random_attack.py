@@ -7,7 +7,7 @@ from torch_geometric.data import Data
 from greatx.attack.targeted import RandomAttack
 from greatx.training import Trainer
 from greatx.utils import BunchDict
-from util import settings
+from util import settings, setup_seed
 
 
 def random_attack(
@@ -17,6 +17,8 @@ def random_attack(
     model: nn.Module,
     surrogate: nn.Module,
 ) -> Tuple[bool, bool]:
+    setup_seed(settings.random_state)
+
     num_features = data.x.size(-1)
     num_classes = data.y.max().item() + 1
     target_label = data.y[target_node].item()

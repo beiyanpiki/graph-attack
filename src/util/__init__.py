@@ -7,6 +7,7 @@ from .util import (
     get_attack_by_name,
     get_model_by_name,
     get_surrogate_by_name,
+    setup_seed,
 )
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "get_surrogate_by_name",
     "get_attack_by_name",
     "check_in_skip",
+    "setup_seed",
 ]

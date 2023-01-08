@@ -22,7 +22,9 @@ args = parser.parse_args()
 if args.conf is not None:
     settings.load_conf(args.conf)
 
-settings.logger.info(f"dataset\tmodel\tsurrogate\tattack\tCLN\tATK")
+settings.logger.info(
+    f"{'dataset':^8s}{'model':^8s}{'surrogate':^8s}{'attack':^8s}{'CLN':^8s}{'ATK':^8s}"
+)
 for dataset_name, model_name, surrogate_name, attack_name in product(
     settings.datasets, settings.models, settings.surrogates, settings.attacks
 ):
@@ -47,8 +49,8 @@ for dataset_name, model_name, surrogate_name, attack_name in product(
     for target_node in test_nodes:
         before, after = attack(data, splits, target_node, model, surrogate)
         metric.add(before, after, 1)
-        # torch.cuda.empty_cache()
+        torch.cuda.empty_cache()
 
     settings.logger.info(
-        f"{dataset_name}\t{model_name}\t{surrogate_name}\t{attack_name}\t{metric[0]/metric[2]:.3f}\t{metric[1]/metric[2]:.3f}"
+        f"{dataset_name:^8s}{model_name:^8s}{surrogate_name:^8s}{attack_name:^8s}{metric[0]/metric[2]:^8.4f}{metric[1]/metric[2]:^8.4f}"
     )

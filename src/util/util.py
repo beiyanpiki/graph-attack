@@ -1,18 +1,13 @@
 from typing import Optional
 
 import numpy as np
+import torch
 from torch import nn
 
 from attack import nettack, random, sga
 from greatx.nn.models import GAT, GCN, SGC
 
 from .config import settings
-
-
-def generate_rand_array(max: int, sample: int, random_state: int) -> np.array:
-    np.random.seed(random_state)
-    return np.random.choice(np.arange(0, max), sample, replace=False)
-
 
 DATAS = ["cora", "citeseer", "pubmed"]
 MODELS = ["gat", "gcn", "sgc"]
@@ -80,3 +75,15 @@ def check_in_skip(data: str, model: str, surrogate: str, attack: str) -> bool:
         if flag:
             return True
     return False
+
+
+def setup_seed(random_state: int) -> None:
+    torch.manual_seed(random_state)
+    torch.cuda.manual_seed_all(random_state)
+    np.random.seed(random_state)
+    random.seed(random_state)
+
+
+def generate_rand_array(max: int, sample: int, random_state: int) -> np.array:
+    setup_seed(random_state)
+    return np.random.choice(np.arange(0, max), sample, replace=False)
