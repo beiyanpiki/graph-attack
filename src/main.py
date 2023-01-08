@@ -52,7 +52,7 @@ for dataset_name, model_name, surrogate_name, attack_name in product(
         torch.cuda.empty_cache()
         if id % 10 == 0:
             settings.logger.debug(
-                f"[{attack_name.upper()}.{model_name.upper()}.{surrogate_name.upper()}.{dataset_name.upper()}] {id}/{settings.sample_nodes} CLN={metric[0]/metric[2]:.4f}  ATK={metric[1]/metric[2]:.4f}"
+                f"{attack_name.upper():^8s}{model_name.upper():^8s}{surrogate_name.upper():^8s}{dataset_name.upper():^8s}{metric[0]/metric[2]:^8.4f}{metric[1]/metric[2]:^8.4f}"
             )
 
     settings.logger.info(
