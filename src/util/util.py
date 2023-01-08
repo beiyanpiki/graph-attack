@@ -1,7 +1,9 @@
 from typing import Optional
+
 import numpy as np
 from torch import nn
 
+from attack import nettack, random, sga
 from greatx.nn.models import GAT, GCN, SGC
 
 from .config import settings
@@ -12,16 +14,20 @@ def generate_rand_array(max: int, sample: int, random_state: int) -> np.array:
     return np.random.choice(np.arange(0, max), sample, replace=False)
 
 
+DATAS = ["cora", "citeseer", "pubmed"]
+MODELS = ["gat", "gcn", "sgc"]
+SURROGATES = ["sgc", "gcn"]
+ATTACKS = ["random", "sga", "nettack"]
+
+
 def get_model_by_name(model_name: str) -> Optional[nn.Module]:
-    MODELS = ["GAT", "GCN", "SGC"]
+    model_name = model_name.lower()
 
-    model_name = model_name.upper()
-
-    if model_name == "GAT":
+    if model_name == "gat":
         return GAT
-    elif model_name == "GCN":
+    elif model_name == "gcn":
         return GCN
-    elif model_name == "SGC":
+    elif model_name == "sgc":
         return SGC
     else:
         settings.logger.fatal(
@@ -31,16 +37,46 @@ def get_model_by_name(model_name: str) -> Optional[nn.Module]:
 
 
 def get_surrogate_by_name(surrogate_name: str) -> Optional[nn.Module]:
-    SURROGATES = ["SGC", "GCN"]
+    surrogate_name = surrogate_name.lower()
 
-    surrogate_name = surrogate_name.upper()
-
-    if surrogate_name == "SGC":
+    if surrogate_name == "sgc":
         return SGC
-    elif surrogate_name == "GCN":
+    elif surrogate_name == "gcn":
         return GCN
     else:
         settings.logger.fatal(
             f"No such surrogate {surrogate_name}, must in {SURROGATES}, please check your config file."
         )
         return None
+
+
+def get_attack_by_name(attack_name: str) -> Optional[nn.Module]:
+    attack_name = attack_name.lower()
+
+    if attack_name == "random":
+        return random
+    elif attack_name == "sga":
+        return sga
+    elif attack_name == "nettack":
+        return nettack
+    else:
+        settings.logger.fatal(
+            f"No such model {attack_name}, must in {ATTACKS}, please check your config file."
+        )
+        return None
+
+
+def check_in_skip(data: str, model: str, surrogate: str, attack: str) -> bool:
+    check = [attack.lower(), model.lower(), surrogate.lower(), data.lower()]
+
+    for skip in settings.skip:
+        flag = True
+        # [attack.model.surrogate.dataset]
+        items = skip.split(".")
+        for i, v in enumerate(items):
+            if v != "*" and check[i] != v:
+                flag = False
+                break
+        if flag:
+            return True
+    return False

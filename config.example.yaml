@@ -24,6 +24,7 @@ datasets:
   - "citeseer"
   - "pubmed"
 skip: 
-  # format like [attack.surrogate.dataset], one per line
+  # format like [attack.model.surrogate.dataset], one per line
   # use '*' to match all.
-  - "nettack.gcn.*"
+  - "nettack.*.*.*"
+ 
