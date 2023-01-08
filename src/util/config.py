@@ -21,6 +21,7 @@ class Settings:
         self.device: str = "cpu"
         self.random_state: int = 3939
         self.sample_nodes: int = 100
+        self.verbose: int = 1
 
         self.logger: logging.Logger = create_logger(self.log_path)
 
@@ -39,6 +40,7 @@ class Settings:
             "random_state": self.random_state,
             "sample_nodes": self.sample_nodes,
             "logger": str(self.logger),
+            "verbose": self.verbose,
             "models": self.models,
             "attacks": self.attacks,
             "surrogates": self.surrogates,
@@ -80,8 +82,10 @@ class Settings:
                 if config["sample_nodes"] is not None
                 else self.sample_nodes
             )
-
-            self.logger = create_logger(self.log_path)
+            self.verbose = (
+                config["verbose"] if config["verbose"] is not None else self.verbose
+            )
+            self.logger = create_logger(self.log_path, logger_name=config_path)
 
             # Experimental settings
             self.models = (

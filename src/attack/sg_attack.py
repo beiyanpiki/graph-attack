@@ -27,23 +27,31 @@ def sg_attack(
 
     # Before attack
     trainer_before = Trainer(model(num_features, num_classes), device=settings.device)
-    trainer_before.fit(data, mask=(splits.train_nodes, splits.val_nodes))
+    trainer_before.fit(
+        data, mask=(splits.train_nodes, splits.val_nodes), verbose=settings.verbose
+    )
     output_before = trainer_before.predict(data, mask=target_node)
 
     # Attack
     trainer_surrogate = Trainer(
         surrogate(num_features, num_classes), device=settings.device
     )
-    trainer_surrogate.fit(data, mask=(splits.train_nodes, splits.val_nodes))
+    trainer_surrogate.fit(
+        data, mask=(splits.train_nodes, splits.val_nodes), verbose=settings.verbose
+    )
 
     attacker = SGAttack(data, device=settings.device)
     attacker.setup_surrogate(trainer_surrogate.model)
     attacker.reset()
-    attacker.attack(target_node)
+    attacker.attack(target_node, disable=settings.verbose == 0)
 
     # After attack
     trainer_after = Trainer(model(num_features, num_classes), device=settings.device)
-    trainer_after.fit(attacker.data(), mask=(splits.train_nodes, splits.val_nodes))
+    trainer_after.fit(
+        attacker.data(),
+        mask=(splits.train_nodes, splits.val_nodes),
+        verbose=settings.verbose,
+    )
     output_after = trainer_after.predict(attacker.data(), mask=target_node)
 
     # Eval

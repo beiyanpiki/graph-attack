@@ -46,10 +46,14 @@ for dataset_name, model_name, surrogate_name, attack_name in product(
     )
 
     metric = Accumulator(3)
-    for target_node in test_nodes:
+    for id, target_node in enumerate(test_nodes):
         before, after = attack(data, splits, target_node, model, surrogate)
         metric.add(before, after, 1)
         torch.cuda.empty_cache()
+        if id % 10 == 0:
+            settings.logger.debug(
+                f"[{attack_name.upper()}.{model_name.upper()}.{surrogate_name.upper()}.{dataset_name.upper()}] {id}/{settings.sample_nodes} CLN={metric[0]/metric[2]:.4f}  ATK={metric[1]/metric[2]:.4f}"
+            )
 
     settings.logger.info(
         f"{dataset_name:^8s}{model_name:^8s}{surrogate_name:^8s}{attack_name:^8s}{metric[0]/metric[2]:^8.4f}{metric[1]/metric[2]:^8.4f}"

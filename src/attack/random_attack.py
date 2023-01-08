@@ -27,16 +27,22 @@ def random_attack(
 
     # Before attack
     trainer_before = Trainer(model(num_features, num_classes), device=settings.device)
-    trainer_before.fit(data, mask=(splits.train_nodes, splits.val_nodes))
+    trainer_before.fit(
+        data, mask=(splits.train_nodes, splits.val_nodes), verbose=settings.verbose
+    )
     output_before = trainer_before.predict(data, mask=target_node)
 
     # Attack
     attacker = RandomAttack(data, device=settings.device)
     attacker.reset()
-    attacker.attack(target_node)
+    attacker.attack(target_node, disable=settings.verbose == 0)
 
     trainer_after = Trainer(model(num_features, num_classes), device=settings.device)
-    trainer_after.fit(attacker.data(), mask=(splits.train_nodes, splits.val_nodes))
+    trainer_after.fit(
+        attacker.data(),
+        mask=(splits.train_nodes, splits.val_nodes),
+        verbose=settings.verbose,
+    )
     output_after = trainer_after.predict(attacker.data(), mask=target_node)
 
     predict_before = torch.argmax(output_before).item()
