@@ -22,7 +22,8 @@ def create_logger(log_path: str, logger_name: str = "default") -> logging.Logger
     filer = logging.FileHandler(log_path, mode="w")
     filer.setLevel(logging.INFO)
     streamer = logging.StreamHandler()
-    streamer.setLevel(logging.DEBUG)
+    # streamer.setLevel(logging.DEBUG)
+    streamer.setLevel(logging.ERROR)
 
     formatter = logging.Formatter(
         f"[%(asctime)s][%(levelname)1.1s]  %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
